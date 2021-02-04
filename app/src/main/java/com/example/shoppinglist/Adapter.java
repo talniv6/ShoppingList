@@ -41,4 +41,8 @@ public class Adapter extends RecyclerView.Adapter<ViewHolder> {
         this.items = items;
         notifyDataSetChanged();
     }
+
+    public List<Item> getItems() {
+        return items;
+    }
 }

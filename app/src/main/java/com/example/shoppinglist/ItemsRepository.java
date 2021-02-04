@@ -50,6 +50,9 @@ public class ItemsRepository {
     }
 
     public void add(String itemName){
+        if (itemName.matches("\\s+"))
+            return;
+
         Map<String, Object> data = new HashMap<>();
         data.put("item_name", itemName);
         data.put("creation_time", System.currentTimeMillis());
