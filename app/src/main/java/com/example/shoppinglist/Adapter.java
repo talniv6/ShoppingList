@@ -3,6 +3,7 @@ package com.example.shoppinglist;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +31,13 @@ public class Adapter extends RecyclerView.Adapter<ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.getTextView().setText(items.get(position).getItemName());
+        setFadeAnimation(holder.itemView);
+    }
+
+    private void setFadeAnimation(View view) {
+        AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(500);
+        view.startAnimation(anim);
     }
 
     @Override
@@ -38,14 +46,16 @@ public class Adapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     public void setItems(List<Item> items) {
+        boolean equals = areItemListsEquals(items, this.items);
         this.items = items;
-        notifyDataSetChanged();
+        if (!equals)
+            notifyDataSetChanged();
     }
 
     public void addItem(Item item) {
         items.add(item);
         notifyItemInserted(items.size() - 1);
-        notifyItemRangeChanged(items.size() - 2, 2);
+        notifyItemRangeChanged(items.size() - 1, 1);
     }
 
     public void removeItem(int position) {
@@ -56,5 +66,17 @@ public class Adapter extends RecyclerView.Adapter<ViewHolder> {
 
     public List<Item> getItems() {
         return items;
+    }
+
+    private boolean areItemListsEquals(List<Item> l1, List<Item> l2){
+        if (l1.size() != l2.size())
+            return false;
+
+        for (int i = 0; i < l1.size(); i++) {
+            if (!l1.get(i).getId().equals(l2.get(i).getId()))
+                return false;
+        }
+
+        return true;
     }
 }

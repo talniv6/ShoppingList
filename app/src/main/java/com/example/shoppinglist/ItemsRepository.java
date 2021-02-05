@@ -30,21 +30,9 @@ public class ItemsRepository {
 
         ItemsRepository itemsRepository = new ItemsRepository(items);
 
-        collectionReference.get().addOnCompleteListener(task -> {
-            List<Item> itemsList = new ArrayList<>();
-            for (DocumentSnapshot document : task.getResult().getDocuments()) {
-                String itemName = document.getString("item_name");
-                long creationTime = document.contains("creation_time") ? document.getLong("creation_time") : System.currentTimeMillis();
-                String id = document.getId();
-                itemsList.add(new Item(id, itemName, creationTime));
-            }
-            Collections.sort(itemsList, (t1, t2) -> Long.compare(t1.getCreationTime(), t2.getCreationTime()));
-            items.postValue(itemsList);
-        });
-
-//        collectionReference.addSnapshotListener((value, error) -> {
+//        collectionReference.get().addOnCompleteListener(task -> {
 //            List<Item> itemsList = new ArrayList<>();
-//            for (DocumentSnapshot document : value.getDocuments()) {
+//            for (DocumentSnapshot document : task.getResult().getDocuments()) {
 //                String itemName = document.getString("item_name");
 //                long creationTime = document.contains("creation_time") ? document.getLong("creation_time") : System.currentTimeMillis();
 //                String id = document.getId();
@@ -53,6 +41,18 @@ public class ItemsRepository {
 //            Collections.sort(itemsList, (t1, t2) -> Long.compare(t1.getCreationTime(), t2.getCreationTime()));
 //            items.postValue(itemsList);
 //        });
+
+        collectionReference.addSnapshotListener((value, error) -> {
+            List<Item> itemsList = new ArrayList<>();
+            for (DocumentSnapshot document : value.getDocuments()) {
+                String itemName = document.getString("item_name");
+                long creationTime = document.contains("creation_time") ? document.getLong("creation_time") : System.currentTimeMillis();
+                String id = document.getId();
+                itemsList.add(new Item(id, itemName, creationTime));
+            }
+            Collections.sort(itemsList, (t1, t2) -> Long.compare(t1.getCreationTime(), t2.getCreationTime()));
+            items.postValue(itemsList);
+        });
 
         return itemsRepository;
     }
