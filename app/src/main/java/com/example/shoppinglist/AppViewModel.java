@@ -24,7 +24,7 @@ public class AppViewModel extends ViewModel {
         itemsRepository.delete(item);
     }
 
-    public void addItem(String itemName){
-        itemsRepository.add(itemName);
+    public Item addItem(String itemName){
+        return itemsRepository.add(itemName);
     }
 }

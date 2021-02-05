@@ -42,6 +42,18 @@ public class Adapter extends RecyclerView.Adapter<ViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void addItem(Item item) {
+        items.add(item);
+        notifyItemInserted(items.size() - 1);
+        notifyItemRangeChanged(items.size() - 2, 2);
+    }
+
+    public void removeItem(int position) {
+        items.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount());
+    }
+
     public List<Item> getItems() {
         return items;
     }

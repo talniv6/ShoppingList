@@ -27,13 +27,16 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
         Adapter adapter = new Adapter();
         recyclerView.setAdapter(adapter);
 
         AppViewModel viewModel = new ViewModelProvider(this).get(AppViewModel.class);
-        viewModel.getItems().observe(this, adapter::setItems);
+        viewModel.getItems().observe(this, items -> {
+            adapter.setItems(items);
+        });
 
-        findViewById(R.id.button_add).setOnClickListener(view -> showAddItemDialog());
+        findViewById(R.id.button_add).setOnClickListener(view -> showAddItemDialog(adapter));
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(
                 0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 //Remove swiped item from list and notify the RecyclerView
                 int position = viewHolder.getAdapterPosition();
                 Item itemToRemove = adapter.getItems().get(position);
+                adapter.removeItem(position);
                 viewModel.deleteItem(itemToRemove);
             }
         };
@@ -56,15 +60,23 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    public void showAddItemDialog() {
+    public void showAddItemDialog(Adapter adapter) {
         AppViewModel viewModel = new ViewModelProvider(this).get(AppViewModel.class);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         final EditText input = new EditText(this);
+        input.setSingleLine(true);
         builder.setView(input);
 
-        builder.setPositiveButton("הוספה", (dialog, which) -> viewModel.addItem(input.getText().toString()));
+        builder.setPositiveButton("הוספה", (dialog, which) -> {
+            String itemName = input.getText().toString();
+            if (itemName.matches("\\s+"))
+                return;
+
+            Item item = viewModel.addItem(itemName);
+            adapter.addItem(item);
+        });
 
         builder.setNegativeButton("ביטול", (dialog, which) -> dialog.cancel());
 
