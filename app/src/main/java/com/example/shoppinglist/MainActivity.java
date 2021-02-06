@@ -32,9 +32,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         AppViewModel viewModel = new ViewModelProvider(this).get(AppViewModel.class);
-        viewModel.getItems().observe(this, items -> {
-            adapter.setItems(items);
-        });
+        viewModel.getItems().observe(this, adapter::setItems);
 
         findViewById(R.id.button_add).setOnClickListener(view -> showAddItemDialog(adapter));
 
