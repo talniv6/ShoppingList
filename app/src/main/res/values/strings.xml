@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">רשימת קניות</string>
-    <string name="header">רשימת קניות</string>
+    <string name="header">רשימת קניות של טל ושיר :)</string>
+    <string-array name="users">
+        <item>טל</item>
+        <item>שיר</item>
+    </string-array>
+    <string name="who_are_you">מי את/ה?</string>
+    <string name="to_continue">המשך</string>
 </resources>

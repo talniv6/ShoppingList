@@ -1,11 +1,14 @@
 package com.example.shoppinglist;
 
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -30,7 +33,14 @@ public class Adapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.getTextView().setText(items.get(position).getItemName());
+        Item item = items.get(position);
+        TextView textView = holder.getTextView();
+
+        Typeface typeface = AppTypeFace.get(textView.getContext(), item.getUser());
+
+        textView.setTypeface(typeface, Typeface.BOLD);
+        textView.setTextColor(textView.getContext().getResources().getColor(R.color.black));
+        textView.setText(item.getItemName());
         setFadeAnimation(holder.itemView);
     }
 
@@ -68,7 +78,7 @@ public class Adapter extends RecyclerView.Adapter<ViewHolder> {
         return items;
     }
 
-    private boolean areItemListsEquals(List<Item> l1, List<Item> l2){
+    private boolean areItemListsEquals(List<Item> l1, List<Item> l2) {
         if (l1.size() != l2.size())
             return false;
 

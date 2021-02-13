@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String user = getIntent().getStringExtra("user");
+
         RecyclerView recyclerView = findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         AppViewModel viewModel = new ViewModelProvider(this).get(AppViewModel.class);
         viewModel.getItems().observe(this, adapter::setItems);
 
-        findViewById(R.id.button_add).setOnClickListener(view -> showAddItemDialog(adapter));
+        findViewById(R.id.button_add).setOnClickListener(view -> showAddItemDialog(adapter, user));
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(
                 0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -58,13 +60,14 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    public void showAddItemDialog(Adapter adapter) {
+    public void showAddItemDialog(Adapter adapter, String user) {
         AppViewModel viewModel = new ViewModelProvider(this).get(AppViewModel.class);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         final EditText input = new EditText(this);
         input.setSingleLine(true);
+        input.setTypeface(AppTypeFace.get(this, user));
         builder.setView(input);
 
         builder.setPositiveButton("הוספה", (dialog, which) -> {
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             if (itemName.matches("\\s+"))
                 return;
 
-            Item item = viewModel.addItem(itemName);
+            Item item = viewModel.addItem(itemName, user);
             adapter.addItem(item);
         });
 
